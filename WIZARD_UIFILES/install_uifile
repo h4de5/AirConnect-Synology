@@ -1,0 +1,37 @@
+[
+    {
+        "_comment": "Select AirConnect Binaries for Installation",
+        "step_title": "Which AirConnect program(s) do you want to install?",
+        "items": [
+            {
+                "type": "singleselect",
+                "subitems": [
+                    {
+                        "key": "airconnect_pkgwizard_select_binaries_both",
+                        "desc": "(Default) airupnp & aircast",
+                        "defaultValue": true
+                    },
+                    {
+                        "key": "airconnect_pkgwizard_select_binaries_airupnp",
+                        "desc": "Only airupnp",
+                        "defaultValue": false
+                    },
+                    {
+                        "key": "airconnect_pkgwizard_select_binaries_aircast",
+                        "desc": "Only aircast",
+                        "defaultValue": false
+                    }
+                ]
+            },
+            {
+                "desc": "<strong style='color:red'>Airupnp</strong> = Needed for Sonos and other UPnP speakers"
+            },
+            {
+                "desc": "<strong style='color:red'>Aircast</strong> = Needed for Chromecast devices"
+            },
+            {
+                "desc": "Please refer to the <a target='_blank' href='https://github.com/eizedev/AirConnect-Synology#readme'>documentation</a> in case of any problems/questions"
+            }
+        ]
+    }
+]

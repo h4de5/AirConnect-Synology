@@ -70,19 +70,21 @@ So you only need one package to support **UPnP**, **Sonos** and **Chromcast** de
 
 You can find the available packages under [releases](https://github.com/eizedev/AirConnect-Synology/releases) for the follow different architecture groups.
 
-The minimum firmware version for the x86_64 package `AirConnect-x86-64-${VERSION}` is **DSM 6.0-7321**. For **all** other package the minimum firmware version is DSM **5.0-4458**:  
+The minimum firmware version for the x86_64 package `AirConnect-x86-64-${VERSION}` is **DSM 6.0-7321**. For **all** other package the minimum firmware version is DSM **5.0-4458**.
 
-| Architecture Group                | Architecture                                                                                                                                          | Package to download                    |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| **ARMv5**                         | 88f6282, 88f6281, 88f628x                                                                                                                             | `AirConnect-arm5-${VERSION}`           |
-| **ARMv7**                         | ipq806x, ipq806x, armada370, armadaxp, armada375, armada38x, alpine, alpine4k, monaco, comcerto2k, hi3535, dakota, ipq806x, northstarplus             | `AirConnect-arm-${VERSION}`            |
-| **ARMv7 Static**                  | noarch, ipq806x, ipq806x, armada370, armadaxp, armada375, armada38x, alpine, alpine4k, monaco, comcerto2k, hi3535, dakota, ipq806x, northstarplus     | `AirConnect-arm-static-${VERSION}`     |
-| **ARMv8**                         | rtd1296, armada37xx                                                                                                                                   | `AirConnect-aarch64-${VERSION}`        |
-| **ARMv8 Static**                  | noarch, rtd1296, armada37xx                                                                                                                           | `AirConnect-aarch64-static-${VERSION}` |
-| **PowerPC**                       | qoriq, Ppc853x                                                                                                                                        | `AirConnect-ppc-${VERSION}`            |
-| **PowerPC Static**                | noarch, qoriq, Ppc853x                                                                                                                                | `AirConnect-ppc-static-${VERSION}`     |
-| **Intel - 32-bit**                | x86, cedarview, bromolow, evansport, avoton, braswell, broadwell, apollolake, dockerx64, kvmx64, denverton, grantley, broadwellnk, Broadwellntbap     | `AirConnect-x86-${VERSION}`            |
-| **Intel/AMD - 64-bit (DSM 6.0+)** | x86_64, x64, cedarview, bromolow, avoton, braswell, broadwell, apollolake, dockerx64, kvmx64, denverton, grantley, broadwellnk, Broadwellntbap, v1000 | `AirConnect-x86-64-${VERSION}`         |
+If the `x86` (32-bit) package is not working on your device, please download the `x86-64` (64-bit) package instead.
+
+| Architecture Group                | Architecture                                                                                                                                                              | Package to download                    |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| **ARMv5**                         | 88f6282, 88f6281, 88f628x                                                                                                                                                 | `AirConnect-arm5-${VERSION}`           |
+| **ARMv7**                         | ipq806x, ipq806x, armada370, armadaxp, armada375, armada38x, alpine, alpine4k, monaco, comcerto2k, hi3535, dakota, ipq806x, northstarplus                                 | `AirConnect-arm-${VERSION}`            |
+| **ARMv7 Static**                  | noarch, ipq806x, ipq806x, armada370, armadaxp, armada375, armada38x, alpine, alpine4k, monaco, comcerto2k, hi3535, dakota, ipq806x, northstarplus                         | `AirConnect-arm-static-${VERSION}`     |
+| **ARMv8**                         | rtd1296, armada37xx                                                                                                                                                       | `AirConnect-aarch64-${VERSION}`        |
+| **ARMv8 Static**                  | noarch, rtd1296, armada37xx                                                                                                                                               | `AirConnect-aarch64-static-${VERSION}` |
+| **PowerPC**                       | qoriq, Ppc853x                                                                                                                                                            | `AirConnect-ppc-${VERSION}`            |
+| **PowerPC Static**                | noarch, qoriq, Ppc853x                                                                                                                                                    | `AirConnect-ppc-static-${VERSION}`     |
+| **Intel - 32-bit**                | x86, cedarview, bromolow, evansport, braswell, broadwell, apollolake, dockerx64, kvmx64, denverton, grantley, broadwellnk, Broadwellntbap                                 | `AirConnect-x86-${VERSION}`            |
+| **Intel/AMD - 64-bit (DSM 6.0+)** | x86_64, x64, cedarview, bromolow, avoton, braswell, broadwell, apollolake, dockerx64, kvmx64, denverton, grantley, broadwellnk, Broadwellntbap, v1000, geminilake, purley | `AirConnect-x86-64-${VERSION}`         |
 
 You can check which architecture you have in the `Package Arch` column on the Synology [What kind of CPU does my Synology NAS have?](https://www.synology.com/en-us/knowledgebase/DSM/tutorial/Compatibility_Peripherals/What_kind_of_CPU_does_my_NAS_have) site.
 
@@ -147,7 +149,7 @@ To speed up the detection of Sonos/UPnP/DLNA speakers and to do not discover spe
 
 > If you have another UPnP based speaker that you want to be supported by this package which is not in the list below, please open an [issue](https://github.com/eizedev/AirConnect-Synology/issues) and let me know (Please tell me the product name (**model name**, **model number** etc.))
 
-> With `-o <NULL>,S1,S3,S5,S9,S12,ZP80,ZP90,S15,ZP100,ZP120,1.0,LibreWireless` the sonos/UPnP speakers that are natively supporting AirPlay or AirPlay2 will be ignored from AirConnect/airupnp and only the ones listed with `-o` will be used. Since no new "non airplay" speakers (from sonos) will be released in the future, that should work in any case. So they will be not displayed twice in the list.  
+>With `-o <NULL>,S1,S3,S5,S9,S12,ZP80,ZP90,S15,ZP100,ZP120,1.0,LibreWireless` the sonos/UPnP speakers that are natively supporting AirPlay or AirPlay2 will be ignored from AirConnect/airupnp and only the ones listed with `-o` will be used. Since no new "non airplay" speakers (from sonos) will be released in the future, that should work in any case. So they will be not displayed twice in the list.  
 
 #### List of supported UPnP Speakers
 
@@ -174,12 +176,14 @@ These default options should work for most of you but can also be changed by usi
 Both processes are running with the low-privilege user `airconnect`.
 
 The processes will only recognise your devices if they are bound to the appropriate local network IP, but this is not trivial as there are various Synology devices and network setups out there.  
-The start script will check all your local network interfaces for private ip addresses (Ranges: `192.168.*` or `10.*` or `172.16.* - 172.31.*`).
+The start script will check all your local network interfaces for private ip addresses (Ranges: `192.168.*` or `10.*` or `172.16.* - 172.31.*` or `17.0.64.* - 17.0.127.*`).
 
-After startup of airupnp/aircast the processes will check if any device (Sonos/UPnP/Chromcast) was discovered (based on some log entries).  
+>The startup check if new speakers were discovered is currently disabled due to a bug:
+
+~~After startup of airupnp/aircast the processes will check if any device (Sonos/UPnP/Chromcast) was discovered (based on some log entries).  
 It there are no devices added in the first **10 seconds** after startup, it will try the next interface (if more interfaces are available).  
 For the automatic IP discovery to work you should have at least **one UPnP/Sonos/Chromecast** device that is online in your local network.  
-If no device was discovered, the processes will be stopped automatically.
+If no device was discovered, the processes will be stopped automatically.~~
 
 If the start script is not able to find the right IP automatically you can fix it in `scripts/start-stop-status` by setting your own local IP (of your nas/router) and building your own package.
 

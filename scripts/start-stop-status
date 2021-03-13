@@ -1,12 +1,16 @@
 #!/bin/sh
-
+#/var/log/upstart/pkgctl-AirConnect.log
 AIRCONNECT_USER="$(echo "${SYNOPKG_PKGNAME}" | awk '{print tolower($_)}')"
 CONFIG_UPNP_FILE="${SYNOPKG_PKGDEST}/config.xml"
 CONFIG_CAST_FILE="${SYNOPKG_PKGDEST}/config-cast.xml"
+AIRCAST_SELECTION="${pkgwizard_binaries_aircast}"
+AIRUPNP_SELECTION="${pkgwizard_binaries_airupnp}"
+AIRCAST_ENABLED="${SYNOPKG_PKGDEST}/aircast_enabled"
+AIRUPNP_ENABLED="${SYNOPKG_PKGDEST}/airupnp_enabled"
 FILTER_AIRPLAY2_DEVICES="<NULL>,S1,S3,S5,S9,S12,ZP80,ZP90,S15,ZP100,ZP120,1.0,LibreWireless"
 
 LOG="/var/log/${AIRCONNECT_USER}.log"
-# Delete Log if older than 1 day
+# Delete Log if size reached 10MB
 find "${LOG}" -size +10M -type f -delete >/dev/null 2>&1
 # Ensure user 'airconnect' exists before doing anything
 if ! synouser --get "${AIRCONNECT_USER}" >/dev/null 2>&1; then
@@ -20,13 +24,6 @@ else
     touch "${LOG}"
     chown "${AIRCONNECT_USER}":users "${LOG}"
 fi
-if [ "${airconnect_pkgwizard_select_binaries_aircast}" = "true" ]; then
-    echo "[$(date +'%T')] Using installation type for aircast only" >>"$LOG"
-elif [ "${airconnect_pkgwizard_select_binaries_airupnp}" = "true" ]; then
-    echo "[$(date +'%T')] Using installation type for airupnp only" >>"$LOG"
-elif [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ]; then
-    echo "[$(date +'%T')] Using installation type for both binaries(airupnp and aircast)" >>"$LOG"
-fi
 
 start_airconnect_on_ip() {
     ip="$1"
@@ -39,15 +36,10 @@ start_airconnect_on_ip() {
             return 1
         fi
     fi
-    if [ "${airconnect_pkgwizard_select_binaries_airupnp}" = "true" ] || [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ]; then
-        echo "[$(date +'%T')] Starting airupnp on ${ip}:${port}" >>"$LOG"
-        su airconnect -s /bin/sh -c "${SYNOPKG_PKGDEST}/airupnp -b ${ip}:${port} -l 1000:2000 -x \"${CONFIG_UPNP_FILE}\" -o \"${FILTER_AIRPLAY2_DEVICES}\" -z -f \"${LOG}\" -d all=info" >>"${LOG}" 2>&1
-    fi
-
-    if [ "${airconnect_pkgwizard_select_binaries_aircast}" = "true" ] || [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ]; then
-        echo "[$(date +'%T')] Starting aircast on ${ip}" >>"$LOG"
-        su airconnect -s /bin/sh -c "${SYNOPKG_PKGDEST}/aircast -b ${ip} -l 1000:2000 -x \"${CONFIG_CAST_FILE}\" -z -f \"${LOG}\" -d all=info" >>"${LOG}" 2>&1
-    fi
+    echo "[$(date +'%T')] Starting airupnp on ${ip}:${port}" >>"$LOG"
+    su airconnect -s /bin/sh -c "${SYNOPKG_PKGDEST}/airupnp -b ${ip}:${port} -l 1000:2000 -x \"${CONFIG_UPNP_FILE}\" -o \"${FILTER_AIRPLAY2_DEVICES}\" -z -f \"${LOG}\" -d all=info" >>"${LOG}" 2>&1
+    echo "[$(date +'%T')] Starting aircast on ${ip}" >>"$LOG"
+    su airconnect -s /bin/sh -c "${SYNOPKG_PKGDEST}/aircast -b ${ip} -l 1000:2000 -x \"${CONFIG_CAST_FILE}\" -z -f \"${LOG}\" -d all=info" >>"${LOG}" 2>&1
 
     # search for 10 seconds "adding renderer" in the logfile to check if speakers are found, if not return 1 rom the function
     #cnt=0
@@ -142,14 +134,14 @@ airconnect_status() {
     # Check if ps has ax options
     if ps ax >/dev/null 2>&1; then
         # shellcheck disable=SC2009
-        if ps ax | grep -E 'airupnp' | grep -v -q grep && ps ax | grep -E 'aircast' | grep -v -q grep && [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ]; then
+        if ps ax | grep -E 'airupnp' | grep -v -q grep && ps ax | grep -E 'aircast' | grep -v -q grep; then
             return 0
-        elif ! ps ax | grep -E 'airupnp' | grep -v -q grep && ! ps ax | grep -E 'aircast' | grep -v -q grep && { [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ] || [ "${airconnect_pkgwizard_select_binaries_airupnp}" = "true" ] || [ "${airconnect_pkgwizard_select_binaries_aircast}" = "true" ]; }; then
+        elif ! ps ax | grep -E 'airupnp' | grep -v -q grep && ! ps ax | grep -E 'aircast' | grep -v -q grep; then
             return 3
-        elif ! ps ax | grep -E 'airupnp' | grep -v -q grep && ps ax | grep -E 'aircast' | grep -v -q grep && { [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ] || [ "${airconnect_pkgwizard_select_binaries_airupnp}" = "true" ]; }; then
+        elif ! ps ax | grep -E 'airupnp' | grep -v -q grep && ps ax | grep -E 'aircast' | grep -v -q grep; then
             echo "[$(date +'%T')] Status: airupnp not running!" >>"$LOG"
             return 3
-        elif ps ax | grep -E 'airupnp' | grep -v -q grep && ! ps ax | grep -E 'aircast' | grep -v -q grep && { [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ] || [ "${airconnect_pkgwizard_select_binaries_aircast}" = "true" ]; }; then
+        elif ps ax | grep -E 'airupnp' | grep -v -q grep && ! ps ax | grep -E 'aircast' | grep -v -q grep; then
             echo "[$(date +'%T')] Status: aircast not running!" >>"$LOG"
             return 3
         else
@@ -157,14 +149,14 @@ airconnect_status() {
         fi
     else
         # shellcheck disable=SC2009
-        if ps | grep -E 'airupnp' | grep -v -q grep && ps | grep -E 'aircast' | grep -v -q grep && [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ]; then
+        if ps | grep -E 'airupnp' | grep -v -q grep && ps | grep -E 'aircast' | grep -v -q grep; then
             return 0
-        elif ! ps | grep -E 'airupnp' | grep -v -q grep && ! ps | grep -E 'aircast' | grep -v -q grep && { [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ] || [ "${airconnect_pkgwizard_select_binaries_airupnp}" = "true" ] || [ "${airconnect_pkgwizard_select_binaries_aircast}" = "true" ]; }; then
+        elif ! ps | grep -E 'airupnp' | grep -v -q grep && ! ps | grep -E 'aircast' | grep -v -q grep; then
             return 3
-        elif ! ps | grep -E 'airupnp' | grep -v -q grep && ps | grep -E 'aircast' | grep -v -q grep && { [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ] || [ "${airconnect_pkgwizard_select_binaries_airupnp}" = "true" ]; }; then
+        elif ! ps | grep -E 'airupnp' | grep -v -q grep && ps | grep -E 'aircast' | grep -v -q grep; then
             echo "[$(date +'%T')] Status: airupnp not running!" >>"$LOG"
             return 3
-        elif ps | grep -E 'airupnp' | grep -v -q grep && ! ps | grep -E 'aircast' | grep -v -q grep && { [ "${airconnect_pkgwizard_select_binaries_both}" = "true" ] || [ "${airconnect_pkgwizard_select_binaries_aircast}" = "true" ]; }; then
+        elif ps | grep -E 'airupnp' | grep -v -q grep && ! ps | grep -E 'aircast' | grep -v -q grep; then
             echo "[$(date +'%T')] Status: aircast not running!" >>"$LOG"
             return 3
         else

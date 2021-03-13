@@ -1,9 +1,25 @@
 #!/bin/sh
 
 AIRCONNECT_USER="$(echo "${SYNOPKG_PKGNAME}" | awk '{print tolower($_)}')"
+AIRCAST_SELECTION="${pkgwizard_binaries_aircast}"
+AIRUPNP_SELECTION="${pkgwizard_binaries_airupnp}"
+AIRCAST_ENABLED="${SYNOPKG_PKGDEST}/aircast_enabled"
+AIRUPNP_ENABLED="${SYNOPKG_PKGDEST}/airupnp_enabled"
 LOG="/var/log/${AIRCONNECT_USER}.log"
-if [ ! -e "${LOG}" ]; then
+# Ensure user 'airconnect' exists before doing anything
+if ! synouser --get "${AIRCONNECT_USER}" >/dev/null 2>&1; then
+    # create user with random password
+    echo "[$(date +'%T')] start-stop-status - Creating \"${AIRCONNECT_USER}\" user." >>"$LOG"
+    synouser --add "${AIRCONNECT_USER}" "$(uuidgen | cut -c-8)" 'AirConnect User' 0 '' ''
+else
+    echo "[$(date +'%T')] Securing existing \"${AIRCONNECT_USER}\" user." >>"$LOG"
+    synouser --modify "${AIRCONNECT_USER}" 'AirConnect User' 0 ''
+fi
+if [ -e "${LOG}" ]; then
+    chown "${AIRCONNECT_USER}":users "${LOG}"
+else
     touch "${LOG}"
+    chown "${AIRCONNECT_USER}":users "${LOG}"
 fi
 
 echo "[$(date +%Y-%m-%d" "%H:%M:%S)] #### Start postuninst... ####" >>"$LOG"
@@ -20,12 +36,21 @@ else
 fi
 
 # Sanity check user had valid folder
-if [ -e "${AIRCONNECT_HOME}" ]; then
+if [ -d "${AIRCONNECT_HOME}" ]; then
     echo "[$(date +'%T')] \"${AIRCONNECT_USER}\" user folder \"${AIRCONNECT_HOME}\" found - deleting it" >>"$LOG"
     rm -r "${AIRCONNECT_HOME}"
-else
-    echo "[$(date +'%T')] \"${AIRCONNECT_USER}\" user folder \"${AIRCONNECT_HOME}\" not found - nothing deleted" >>"$LOG"
 fi
+
+# Remove files needed for detection which binaries will be started
+if [ -e "${AIRCAST_ENABLED}" ]; then
+    echo "[$(date +'%T')] aircast detection file \"${AIRCAST_ENABLED}\" found - deleting it" >>"$LOG"
+    rm "${AIRCAST_ENABLED}"
+fi
+if [ -e "${AIRUPNP_ENABLED}" ]; then
+    echo "[$(date +'%T')] airupnp detection file \"${AIRUPNP_ENABLED}\" found - deleting it" >>"$LOG"
+    rm "${AIRUPNP_ENABLED}"
+fi
+
 sleep 3
 echo "[$(date +%Y-%m-%d" "%H:%M:%S)] #### Done postuninst ####" >>"$LOG"
 exit 0

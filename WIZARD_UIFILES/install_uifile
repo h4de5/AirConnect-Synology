@@ -1,23 +1,23 @@
 [
     {
-        "_comment": "Select AirConnect Binaries for Installation",
         "step_title": "Which AirConnect program(s) do you want to install?",
         "items": [
             {
                 "type": "singleselect",
+                "desc": "Choose Installation Type:",
                 "subitems": [
                     {
-                        "key": "airconnect_pkgwizard_select_binaries_both",
+                        "key": "pkgwizard_binaries_both",
                         "desc": "(Default) airupnp & aircast",
                         "defaultValue": true
                     },
                     {
-                        "key": "airconnect_pkgwizard_select_binaries_airupnp",
+                        "key": "pkgwizard_binaries_airupnp",
                         "desc": "Only airupnp",
                         "defaultValue": false
                     },
                     {
-                        "key": "airconnect_pkgwizard_select_binaries_aircast",
+                        "key": "pkgwizard_binaries_aircast",
                         "desc": "Only aircast",
                         "defaultValue": false
                     }

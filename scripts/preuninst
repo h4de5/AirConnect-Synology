@@ -8,6 +8,7 @@ fi
 
 echo "[$(date +%Y-%m-%d" "%H:%M:%S)] #### Start preuninst... ####" >>"$LOG"
 #make sure airconnect is stopped
+echo "[$(date +'%T')] Stopping airupnp and aircast if still running..." >>"$LOG"
 killall -16 airupnp >/dev/null 2>&1
 killall -16 aircast >/dev/null 2>&1
 sleep 10

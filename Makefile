@@ -1,8 +1,8 @@
 # Syno package structure: https://help.synology.com/developer-guide/synology_package/package_structure.html
 # Git commit SHA from https://github.com/philippe44/AirConnect/commits/master/bin
-REPO_REVISION=aba116d72034afe2bcb2ee9698eb8e6e9f3e3b9a
+REPO_REVISION=eba1a15cac93be9f01e51f84097ad1906167a96f
 #REPO_REVISION2=ba623f7f8b93a060c3af54d35fee9b28eeddb1fe
-VERSION=0.2.43.1-$(shell date '+%Y%m%d')
+VERSION=0.2.50.5-$(shell date '+%Y%m%d')
 
 LICENSE:
 	curl -s -L https://github.com/philippe44/AirConnect/raw/${REPO_REVISION}/LICENSE -O
@@ -92,7 +92,7 @@ ppc-static:
 
 .PHONY: x86
 x86:
-	$(eval export INFO_ARCH=x86 cedarview bromolow evansport braswell broadwell apollolake dockerx64 kvmx64 denverton grantley broadwellnk Broadwellntbap)
+	$(eval export INFO_ARCH=x86 cedarview bromolow evansport braswell broadwell dockerx64 kvmx64 denverton grantley broadwellnk Broadwellntbap)
 	$(eval export INFO_FIRMWARE=5.0-4458)
 	@true
 

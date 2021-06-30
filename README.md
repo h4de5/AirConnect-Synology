@@ -4,6 +4,8 @@
 
 ![AirConnect-Synology Logo](images/header.png)
 
+> 2021-06-30: Not yet compatible with **DSM 7** since the package architecture has changed and the build process needs to be changed. Working on it!
+
 A minimal Synology package for [AirConnect](https://github.com/philippe44/AirConnect).  
 It allows you to use [AirPlay](https://en.wikipedia.org/wiki/AirPlay) to stream to **UPnP/Sonos** & **Chromecast** devices that do not natively support AirPlay.  
 
@@ -31,6 +33,7 @@ It allows you to use [AirPlay](https://en.wikipedia.org/wiki/AirPlay) to stream 
     - [Build packages for all architectures](#build-packages-for-all-architectures)
     - [Build a package for a specific architecture](#build-a-package-for-a-specific-architecture)
   - [Troubleshooting](#troubleshooting)
+    - [Cannot be installed](#cannot-be-installed)
     - [Issues](#issues)
     - [Multicast and IGMP Snooping/Proxy](#multicast-and-igmp-snoopingproxy)
     - [Debugging](#debugging)
@@ -83,7 +86,7 @@ If the `x86` (32-bit) package is not working on your device, please download the
 | **ARMv8 Static**                  | noarch, rtd1296, armada37xx                                                                                                                                               | `AirConnect-aarch64-static-${VERSION}` |
 | **PowerPC**                       | qoriq, Ppc853x                                                                                                                                                            | `AirConnect-ppc-${VERSION}`            |
 | **PowerPC Static**                | noarch, qoriq, Ppc853x                                                                                                                                                    | `AirConnect-ppc-static-${VERSION}`     |
-| **Intel - 32-bit**                | x86, cedarview, bromolow, evansport, braswell, broadwell, apollolake, dockerx64, kvmx64, denverton, grantley, broadwellnk, Broadwellntbap                                 | `AirConnect-x86-${VERSION}`            |
+| **Intel - 32-bit**                | x86, cedarview, bromolow, evansport, braswell, broadwell, dockerx64, kvmx64, denverton, grantley, broadwellnk, Broadwellntbap                                             | `AirConnect-x86-${VERSION}`            |
 | **Intel/AMD - 64-bit (DSM 6.0+)** | x86_64, x64, cedarview, bromolow, avoton, braswell, broadwell, apollolake, dockerx64, kvmx64, denverton, grantley, broadwellnk, Broadwellntbap, v1000, geminilake, purley | `AirConnect-x86-64-${VERSION}`         |
 
 You can check which architecture you have in the `Package Arch` column on the Synology [What kind of CPU does my Synology NAS have?](https://www.synology.com/en-us/knowledgebase/DSM/tutorial/Compatibility_Peripherals/What_kind_of_CPU_does_my_NAS_have) site. Please **find your device** in the overview on the **synology site** and compare the `Package Arch` column on the synology site with the `Architecture` column in the table above.
@@ -340,6 +343,10 @@ Possible values for **ARCH**: `arm, aarch64, arm5, ppc, ppc-static, x86, x86-64`
 You can find the built packages in the **dist** directory.
 
 ## Troubleshooting
+
+### Cannot be installed
+
+If you get an error message that the package **cannot be installed** or **updated** when updating AirConnect-Synology, please **uninstall the old version** first (`Package Center -> AirConnect -> Uninstall`) and then install the new version. Uninstalling also removes the old scripts, references and configurations (only the logfile remains). Sometimes it can happen that the problem is already fixed with this.  
 
 ### Issues
 
